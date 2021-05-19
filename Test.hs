@@ -10,12 +10,11 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import System.Process
 import Test.Hspec
+import System.Environment
 
 -- Run `./Test.hs --match "/Sanity/"` to ensure that non wrapped
 -- binaries fails on NixOS. This is done using bubblewrap in order to hide the
 -- system paths.
-
-currentChannel = "<nixpkgs>"
 
 -- | Utils function: run a command and returns its output.
 processOutput = processOutput' . bwrap
@@ -82,6 +81,16 @@ bwrap cmd =
     <> cmd
 
 main = do
+  args <- getArgs
+
+  -- By default it uses the nixpkgs of your system but you can override it with
+  -- ./Test channel:nixos-unstable
+  -- or
+  -- ./Test https://github.com/nixos/nixpkgs/archive/xxxxsh256sumcommit.tar.gz
+  let currentChannel = case args of
+                     [x] -> Text.pack x
+                     [] -> "<nixpkgs>"
+
   putStrLn "Running tests for nixGL"
   putStrLn "It can take a while, this will build and test all drivers in the background"
   glxinfo64 <- (<> "/bin/glxinfo") <$> processOutput' ["nix-build", currentChannel, "-A", "glxinfo"]
