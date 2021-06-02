@@ -51,7 +51,7 @@ let
       if versionMatch != null then
         builtins.head versionMatch
       else
-        null;
+        "unknown";
 
   addNvidiaVersion = drv: drv.overrideAttrs(oldAttrs: {
     name = oldAttrs.name + "-${_nvidiaVersion}";
