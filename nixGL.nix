@@ -35,7 +35,7 @@ let
         preferLocalBuild = true;
         allowSubstitutes = false;
       }
-      "cp /proc/driver/nvidia/version $out || touch $out";
+      "cp /proc/driver/nvidia/version $out || echo unknown > $out";
 
   # The nvidia version. Either fixed by the `nvidiaVersion` argument, or
   # auto-detected. Auto-detection is impure.
